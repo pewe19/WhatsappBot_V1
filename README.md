@@ -5,7 +5,7 @@
 1. [Introduction](#introduction)
    - [Compatibility](#compatibility)
 2. [Usage](#usage)
-   - [Python File (Chrome Launcher)](#python)
+   - [Python File (browser and phone config)](#python)
    - [JavaScript File (Messages)](#javascript)
 3. [Contributions](#about-contributions)
 
@@ -24,6 +24,8 @@ After having a lot of headaches with bots from other developers, I realized that
 
 ### Compatibility
 
+**_Only Available on Windows_**
+
 For now, this bot is compatible with the following browsers:
 
 - Google Chrome
@@ -34,14 +36,18 @@ For now, this bot is compatible with the following browsers:
 
 This project is divided into two parts:
 
-1. A python file to open a google chrome window and inject the javascript file
-2. A javascript file with the "Logic" of the bot and the phrases
+1. A python file to open a window with the browser selected and inject a javascript file
+2. A javascript file with the "Logic" of the bot and its features
 
 ### Python
 
-In the following line you can change the number of the target you want to send messages to _(do not forget the area code "+00")_
+First, choose one browser and write its name here:
 
-    driver.get("https://web.whatsapp.com/send?phone=Number of the target")
+    selectedBrowser = "Chrome" # Available options: Chrome, Edge and Firefox
+
+Then, on the following line you can change the number of the target you want to send messages to _(do not forget the area code "+00")_
+
+    phone = "+61115648897"
 
 ### JavaScript
 
@@ -65,15 +71,23 @@ These sentences will be sent _randomly_ every certain time you specify. If you w
 
 This is the structure of the scheduled phrases
 
-    const schePhrases: [
-            {
-            phrase: "Some phrase", // Well, the phrase
-            time: 12, // Here you should type the specific hour that you want to send it from 0 to 23
-            },
+    const schePhrases = [
+        {
+            phrase: "Some Scheduled Phrase", // Well, the phrase
+            time: 12, // Here you should put the specific hour that you want to send it from 0 to 23
+        },
+        {
+            phrase: "Another Scheduled Phrase",
+            time: 22,
+        },
+        {
+            phrase: "An extra phrase as example of scheTime",
+            time: 12,
+        },
+    ];
 
-    ]
-
-    const scheTime = [12, 13, 1, 23] // Here you should put all the hours you put in the schePhrases time
+    // Just mention the hours that you would like to schedule the messages (One per hour)
+    const scheTime = [12, 22]; // Here you should put all the hours you put in the schePhrases time
 
 > - Note-1: In scheTime constant, you DO NOT have to put repeated numbers. Just one time.
 > - Note-2: It doesn't matters if you put several phrases for the same time, It will send them together.

@@ -1,4 +1,3 @@
-//  Message input code: _2lMWa
 console.log("Runing Program");
 
 // LIST OF EMOJIS ON "emojis.txt"
@@ -110,11 +109,11 @@ function whatsappBot() {
   console.log("\tChosen phrase: " + phrases[chosenPhrase]);
   console.log("\tWriting...");
   if (onlyScheduled && everyS <= 3600000) {
-    scheTime.includes(time) // if the current hour is 10 o'clock or 22 o'clock then send this message
+    scheTime.includes(time) // if scheTime include the current time then send scheduled message
       ? sendScheduledMessages(time)
       : writeAndSendMsg(phrases[chosenPhrase]);
   } else {
-    onlyRandom ? writeAndSendMsg(phrases[chosenPhrase]) : null; // if not, send selected phrase
+    onlyRandom ? writeAndSendMsg(phrases[chosenPhrase]) : null; // if not, send Random phrase
   }
   console.log("\n\n Sent!");
   count++;

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from selenium import webdriver
 from os import path, getlogin
 
@@ -32,7 +33,7 @@ def startBotOn(browser):
             from selenium.webdriver.chrome.options import Options
             print("Chrome Module Found")
         except ModuleNotFoundError or ImportError as err:
-            print("[!] ERROR: Chrome Module Not Found")
+            print("[!] ERROR: Selenium WebDriver Chrome Not Found")
             print(err)
 
         options = Options()
@@ -47,7 +48,7 @@ def startBotOn(browser):
             from selenium.webdriver.edge.options import Options
             print("Edge Module Found")
         except ModuleNotFoundError or ImportError as err:
-            print("[!] ERROR: Edge Module Not Found")
+            print("[!] ERROR:  Selenium WebDriver Edge Not Found")
             print(err)
         options = Options()
         options.add_argument(
@@ -62,7 +63,7 @@ def startBotOn(browser):
             from selenium.webdriver.firefox.options import Options
             print("Firefox Module Found")
         except ModuleNotFoundError or ImportError as err:
-            print("[!] ERROR: Firefox Module Not Found")
+            print("[!] ERROR: Selenium WebDriver Firefox Not Found")
             print(err)
         options = Options()
         options.add_argument(  # May you should have to change the profile name, look for this address -> C:\Users\%USERNAME%\AppData\Local\Mozilla\Profiles
