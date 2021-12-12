@@ -5,12 +5,12 @@ from os import path, getlogin
 # Change the name of the browser that you want to run this bot
 # Available browsers:
 #       - Chrome
-#       - Edge -> I would recommend this browser if you want to run this program for a long time on your computer, because it have less consuption of RAM
+#       - Edge -> I would recommend this browser if you want to run this program for a long time on your computer, because it has less consuption of RAM
 #       - Firefox
 selectedBrowser = "Chrome"
 
 # Here you can add the target, do not forget the area code +00
-phone = ""
+phone = "+61404558115"
 
 # Url of whatsapp, do not change ir unless it is necesary
 url = "https://web.whatsapp.com/send?phone={}".format(phone)
