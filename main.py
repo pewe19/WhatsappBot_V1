@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 from selenium import webdriver
 from os import path, getlogin
 
@@ -71,9 +72,13 @@ def startBotOn(browser):
         )
         driver = webdriver.Firefox(
             executable_path='{}\\drivers\\geckodriver.exe'.format(dir_path), options=options)
+=======
+from UI import runUI
+from driverConfig import startBot
+>>>>>>> Stashed changes
 
+def runBot():
+    startBot()
 
 if __name__ == "__main__":
-    startBotOn(selectedBrowser)
-    driver.get(url)
-    driver.execute_script(file.read())
+    runUI()
