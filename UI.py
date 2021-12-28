@@ -1,11 +1,19 @@
 from json.encoder import JSONEncoder
+from os import path
+import sys
 import eel
 import json
 from types import SimpleNamespace
-from os import path, getlogin
+# determine if the application is a frozen `.exe` (e.g. pyinstaller --onefile) 
+if getattr(sys, 'frozen', False):
+    application_path = path.dirname(sys.executable)
+# or a script file (e.g. `.py` / `.pyw`)
+elif __file__:
+    application_path = path.dirname(__file__)
+    
 
-dir_path = path.dirname(path.realpath(__file__))
-user = getlogin()
+dir_path = application_path
+
 
 class configEncoder(JSONEncoder):
     def default(self, o):
@@ -56,7 +64,12 @@ def checkSavedData():
             setJsConfigFile = json.load(f1, object_hook=lambda d: SimpleNamespace(**d))
             setJsConfig = jsConfig(setJsConfigFile.modes, setJsConfigFile.randomPhrases, setJsConfigFile.scheduledPhrases, setJsConfigFile.every, setJsConfigFile.times) 
             f1.close()
-            eel.getSavedData(json.dumps(setJsConfig, cls=configEncoder, ensure_ascii=False))
+        with open(r"{}\config\botConfig.json".format(dir_path),
+                "r", encoding="utf8") as f:
+            pythonConfigFile = json.load(f, object_hook=lambda d: SimpleNamespace(**d))
+            setPyConfig = pyConfig(pythonConfigFile.browser,pythonConfigFile.phone)
+            f.close()
+        eel.getSavedData(json.dumps(setJsConfig, cls=configEncoder, ensure_ascii=False), json.dumps(setPyConfig, cls=configEncoder, ensure_ascii=False))
             
     
 

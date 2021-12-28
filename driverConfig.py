@@ -17,9 +17,11 @@
 # Website:        https://fcanalejo.web.app
 
 import json
+import sys
 from types import SimpleNamespace
 from selenium import webdriver
-from os import path, getlogin
+from os import getlogin, path
+
 from UI import pyConfig, jsConfig
 
 # Change the name of the browser that you want to run this bot
@@ -27,6 +29,14 @@ from UI import pyConfig, jsConfig
 #       - Chrome
 #       - Edge -> I would recommend this browser if you want to run this program for a long time on your computer, because it has less consuption of RAM
 #       - Firefox
+
+# determine if the application is a frozen `.exe` (e.g. pyinstaller --onefile) 
+if getattr(sys, 'frozen', False):
+    application_path = path.dirname(sys.executable)
+# or a script file (e.g. `.py` / `.pyw`)
+elif __file__:
+    application_path = path.dirname(__file__)
+    
 
 class pythonConfig:
     def __init__(self, browser, phone ):
@@ -57,7 +67,7 @@ manualPhone = "+61404558115"
 manualURL = "https://web.whatsapp.com/send?phone={}".format(manualPhone)
 
 # Do not change this
-dir_path = path.dirname(path.realpath(__file__))
+dir_path = application_path
 user = getlogin()
 
 # Check if all the addresses are okay, may change depending of your computer

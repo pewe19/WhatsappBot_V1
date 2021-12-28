@@ -4,8 +4,8 @@ const content = document.getElementById("content");
 
 
 var pyConfig = {
-  browser: "Chrome",
-  phone: "+61404558115",
+  browser: "",
+  phone: "",
 }
 
 
@@ -36,12 +36,22 @@ function asignarJsConfig(obj) {
   jsConfig.every = obj.every;
 }
 
+function asignarPyConfig(obj) {
+  pyConfig.browser = obj.browser;
+  pyConfig.phone = obj.phone;
+  document.getElementById("Phone").value = pyConfig.phone
+  document.getElementById("Browser").value = pyConfig.browser
+}
+
 eel.expose(getSavedData)
-function getSavedData(data) {
-  savedData = JSON.parse(data);
-  console.log(savedData)
-  if (savedData != (undefined || null || "")) asignarJsConfig(savedData)
+function getSavedData(jsData, pyData) {
+  savedJsData = JSON.parse(jsData);
+  savedPyData = JSON.parse(pyData);
+  console.log(savedPyData)
+  if (savedJsData != (undefined || null || "")) asignarJsConfig(savedJsData)
+  if (savedPyData != (undefined || null || "")) asignarPyConfig(savedPyData)
   console.log("Valores guardados asigandos a js COnfig", jsConfig)
+  console.log("Valores guardados asigandos a py COnfig", pyConfig)
   randomPhrases = [...jsConfig.randomPhrases]
   scheduledPhrases = [...jsConfig.scheduledPhrases]
 }
@@ -89,6 +99,7 @@ function addRemClass(element, toAdd, toRemove) {
 function writing(e) {
   if (e.id == "Browser") pyConfig.browser = e.value;
   if (e.id == "Phone") pyConfig.phone = e.value;
+  if (e.id == "Every") jsConfig.every = Number(e.value) * 60000;
 }
 
 function saveBot() {
@@ -201,11 +212,12 @@ function addPhrases(type) {
     jsConfig.scheduledPhrases = [...newScheduledPhrases]
     loadScheduled(true, newScheduledPhrases);
     console.log("Scheduled phrases saved: ", scheduledPhrases);
-
+    jsConfig.times = []
     jsConfig.scheduledPhrases.forEach(phrase => {
       if (!jsConfig.times.includes(phrase.time)){
         jsConfig.times.push(phrase.time)
       }
+      
     })
 
   }

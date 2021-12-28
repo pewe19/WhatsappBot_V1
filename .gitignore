@@ -1,0 +1,7 @@
+/build
+/dist
+/__pycache__
+*.pyc
+config/botConfig.json
+config/userConfig.json
+*.spec
