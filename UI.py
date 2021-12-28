@@ -88,7 +88,7 @@ def startBot():
      main.runBot()
 
 def runUI():
-    eel.init('web', allowed_extensions=['.js', '.html'])
+    eel.init('UI', allowed_extensions=['.js', '.html'])
     eel.start('index.html')
 
     
