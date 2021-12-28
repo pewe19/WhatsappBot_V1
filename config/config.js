@@ -36,7 +36,7 @@ const scheTime = [12, 22]; // 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15.
 // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 var cache = []; // To avoid repeated phrases.
-var cacheLimit = 4;
+var cacheLimit = phrases.length;
 var diff = false;
 var chosenPhrase = 0;
 var msgInput;
@@ -56,7 +56,7 @@ function randInt(min, max) {
 
 function isDiff(phrase, che) {
   // This function check the cache to avoid repeating phrases. It compare the phrase selected with the phrases saved in cache
-  for (i = 0; i <= che.length - 1; i++) {
+  for (i = 0; i < che.length; i++) {
     if (che[i] == phrase) return false;
   }
   return true;
@@ -65,9 +65,12 @@ function isDiff(phrase, che) {
 function selectPhrase() {
   // It select a phrase and send it to "isDiff( "phrase selected", cache[string] )" to avoid repeat the phrase, if it isn't on the list, then finish the loop turning diff to true
   diff = false;
+  let count = 0
   while (!diff) {
-    chosenPhrase = randInt(0, phrases.length - 1);
+    chosenPhrase = randInt(0, phrases.length);
     isDiff(chosenPhrase, cache) ? (diff = true) : (diff = false);
+    count++;
+    if (count == 100) diff = true;
   }
 }
 
@@ -79,6 +82,7 @@ function checkcache() {
     cache = [];
     cache.push(chosenPhrase);
   }
+  console.log("valor de cache: ", cache)
 }
 
 function sendMsg(input) {
@@ -94,7 +98,7 @@ function writeAndSendMsg(phrase) {
 }
 
 function sendScheduledMessages(hour) {
-  let schePhrase = schePhrases.filter((phrase) => phrase.time == hour);
+  let schePhrase = schePhrases.filter((phrase) => Number(phrase.time) == hour);
   schePhrase.forEach((p) => setTimeout(() => writeAndSendMsg(p.phrase), 2000));
 }
 
@@ -110,7 +114,7 @@ function whatsappBot() {
   console.log("\tChosen phrase: " + phrases[chosenPhrase]);
   console.log("\tWriting...");
   if (onlyScheduled && everyS <= 3600000) {
-    scheTime.includes(time) // if the current hour is 10 o'clock or 22 o'clock then send this message
+    scheTime.includes(time.toString()) // if the current hour is 10 o'clock or 22 o'clock then send this message
       ? sendScheduledMessages(time)
       : writeAndSendMsg(phrases[chosenPhrase]);
   } else {

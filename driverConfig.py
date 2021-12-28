@@ -64,7 +64,7 @@ user = getlogin()
 
 
 def getJsConfig():
-    with open(r"{}\userConfig.json".format(dir_path),
+    with open(r"{}\config\userConfig.json".format(dir_path),
                 "r", encoding="utf8") as f:
         setJsConfigFile = json.load(f, object_hook=lambda d: SimpleNamespace(**d))
     global setJsConfig
@@ -72,7 +72,7 @@ def getJsConfig():
     f.close()
     
 def getPytConfig():
-    with open(r"{}\botConfig.json".format(dir_path),
+    with open(r"{}\config\botConfig.json".format(dir_path),
                 "r", encoding="utf8") as f:
         pythonConfigFile = json.load(f, object_hook=lambda d: SimpleNamespace(**d))
     global setPyConfig
@@ -93,7 +93,7 @@ def setupConfig(Config):
     print(schePhra.replace("=", ":"))
     clearBotConfig()
     # Bot logic
-    config = open(r"{}\min-config.js".format(dir_path),
+    config = open(r"{}\config\min-config.js".format(dir_path),
                   "r", encoding="utf8")
 
     # Only change it if the name of the javascript file change, or address
@@ -173,7 +173,7 @@ def startBot():
         driver.execute_script(bot.read())
     else:
         startBotOn(selectedBrowser)
-        bot = open(r"{}\bot.js".format(dir_path),
+        bot = open(r"{}\config\config.js".format(dir_path),
                 "r", encoding="utf8")
         driver.get(manualURL)
         driver.execute_script(bot.read())

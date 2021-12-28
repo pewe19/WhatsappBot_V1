@@ -1,5 +1,5 @@
 window.onload = () => {
-  routes("scheduled");
+  routes("home");
 };
 
 function routes(route) {

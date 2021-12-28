@@ -1,1 +1,0 @@
-const onlyScheduled=true;const onlyRandom=true;const everyS=3600000;const phrases=["Some Random Phrase","Another Random Phrase"];const schePhrases=[{phrase:"Some Scheduled Phrase",time:12,},{phrase:"Another Scheduled Phrase",time:22,},{phrase:"An extra phrase as example of scheTime",time:12,},];const scheTime=[12,22];

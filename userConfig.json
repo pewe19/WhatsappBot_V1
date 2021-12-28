@@ -1,1 +1,0 @@
-{"modes": {"random": false, "scheduled": false}, "randomPhrases": ["hola como andas", "Soy una frase", "Soy otra frase"], "scheduledPhrases": [{"phrase": "First Phrase", "time": "12"}, {"phrase": "Second Phrase", "time": "20"}, {"phrase": "Third Phrase", "time": "1"}, {"phrase": "Fourth Phrase", "time": "12"}], "times": ["12", "20", "1"], "every": 36000}

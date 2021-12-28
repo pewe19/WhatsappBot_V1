@@ -1,0 +1,1 @@
+{"modes": {"random": false, "scheduled": true}, "randomPhrases": ["frase random guardada 1", "frase random guardada 2", "frase random guardada 3"], "scheduledPhrases": [{"phrase": "Primer frase agendada guardada", "time": "12"}, {"phrase": "Segunda frase agendada guardada", "time": "13"}], "times": ["12", "20", "1", "13", "15"], "every": 36000}

@@ -10,6 +10,7 @@ const home = () => `
                 class="browser"
                 placeholder="Chrome, Edge or Firefox"
                 id="Browser"
+                value="${pyConfig.browser}"
                 onkeyup="writing(this)"
               />
             </div>
@@ -20,6 +21,7 @@ const home = () => `
                 class="phone"
                 placeholder="E.g, +64468487982"
                 id="Phone"
+                value="${pyConfig.phone}"
                 onkeyup="writing(this)"
               />
             </div>
@@ -46,6 +48,7 @@ const home = () => `
               </button>
             </div>
           </section>
+          <button class="start" onclick="saveBot()">Save</button>
           <button class="start" onclick="startBot()">Start Bot</button>
         </section>
 `;

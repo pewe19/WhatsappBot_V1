@@ -1,9 +1,13 @@
 const content = document.getElementById("content");
 // HOME ROUTE
+
+
+
 var pyConfig = {
   browser: "Chrome",
   phone: "+61404558115",
 }
+
 
 var jsConfig = {
   modes: {
@@ -13,9 +17,41 @@ var jsConfig = {
   randomPhrases: [],
   scheduledPhrases: [],
   times: [],
-  every: 36000
+  every: 36000,
 }
 
+
+var randomPhrases = [];
+var newRandomPhrases = [];
+
+var scheduledPhrases = [];
+var newScheduledPhrases = [];
+
+function asignarJsConfig(obj) {
+  jsConfig.modes.random = obj.modes[0];
+  jsConfig.modes.scheduled = obj.modes[1];
+  jsConfig.randomPhrases = [...obj.randomPhrases];
+  jsConfig.scheduledPhrases = [...obj.scheduledPhrases];
+  jsConfig.times = [...obj.time];
+  jsConfig.every = obj.every;
+}
+
+eel.expose(getSavedData)
+function getSavedData(data) {
+  savedData = JSON.parse(data);
+  console.log(savedData)
+  if (savedData != (undefined || null || "")) asignarJsConfig(savedData)
+  console.log("Valores guardados asigandos a js COnfig", jsConfig)
+  randomPhrases = [...jsConfig.randomPhrases]
+  scheduledPhrases = [...jsConfig.scheduledPhrases]
+}
+
+function checkLocalData() {
+  console.log(jsConfig)
+  eel.checkSavedData()
+}
+
+checkLocalData();
 
 function modeToggle(mode) {
   if (mode == "random") {
@@ -55,17 +91,19 @@ function writing(e) {
   if (e.id == "Phone") pyConfig.phone = e.value;
 }
 
+function saveBot() {
+    eel.getpythonConfig(JSON.stringify(pyConfig));
+    eel.getjsConfig(JSON.stringify(jsConfig));
+}
+
 function startBot() {
-  console.log(pyConfig);
-  eel.getpythonConfig(JSON.stringify(pyConfig));
-  eel.getjsConfig(JSON.stringify(jsConfig));
+  saveBot()
   eel.startBot();
 }
 
 // RANDOM ROUTE
 
-var randomPhrases = ["hola como andas", "Soy una frase", "Soy otra frase"];
-var newRandomPhrases = [];
+
 
 function addInput(type, value) {
   let inputs = document.querySelectorAll(".inputPhrase");
@@ -169,29 +207,12 @@ function addPhrases(type) {
         jsConfig.times.push(phrase.time)
       }
     })
+
   }
+  saveBot()
 }
 
 // SCHEDULED ROUTE
 
-var scheduledPhrases = [
-  {
-    phrase: "First Phrase",
-    time: 12,
-  },
-  {
-    phrase: "Second Phrase",
-    time: 20,
-  },
-  {
-    phrase: "Third Phrase",
-    time: 1,
-  },
-  {
-    phrase: "Fourth Phrase",
-    time: 12,
-  },
-];
 
-var newScheduledPhrases = [];
 

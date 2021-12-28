@@ -2,6 +2,10 @@ from json.encoder import JSONEncoder
 import eel
 import json
 from types import SimpleNamespace
+from os import path, getlogin
+
+dir_path = path.dirname(path.realpath(__file__))
+user = getlogin()
 
 class configEncoder(JSONEncoder):
     def default(self, o):
@@ -43,9 +47,21 @@ def getjsConfig(Config):
     userConfig = jsConfig(data.modes, data.randomPhrases, data.scheduledPhrases , data.every, data.times)
     saveData(data, "userConfig")
 
+@eel.expose
+def checkSavedData():
+    from os.path import isfile as exists
+    if (exists(r"{}\config\userConfig.json".format(dir_path)) and exists(r"{}\config\botConfig.json".format(dir_path))):
+        with open(r"{}\config\userConfig.json".format(dir_path),
+                "r", encoding="utf8") as f1:
+            setJsConfigFile = json.load(f1, object_hook=lambda d: SimpleNamespace(**d))
+            setJsConfig = jsConfig(setJsConfigFile.modes, setJsConfigFile.randomPhrases, setJsConfigFile.scheduledPhrases, setJsConfigFile.every, setJsConfigFile.times) 
+            f1.close()
+            eel.getSavedData(json.dumps(setJsConfig, cls=configEncoder, ensure_ascii=False))
+            
+    
 
 def saveData(data, filename):
-    with open('{}.json'.format(filename), 'w', encoding='utf-8') as f:
+    with open(r'{}\config\{}.json'.format(dir_path, filename), 'w', encoding='utf-8') as f:
         json.dump(data, f, cls=configEncoder, ensure_ascii=False)
     
 @eel.expose      
