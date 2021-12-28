@@ -34,12 +34,12 @@ class pythonConfig:
         self.phone = phone
         
 class jsConfig:
-    def __init__(self, modes, randomPhrases, scheduledPhrases, times, every):
+    def __init__(self, modes, randomPhrases, scheduledPhrases, every, times):
         self.modes = [modes.random, modes.scheduled]
         self.randomPhrases = randomPhrases
         self.scheduledPhrases = scheduledPhrases
-        self.times = times
         self.every = every
+        self.times = times
 
 
 # disable/enable UI
