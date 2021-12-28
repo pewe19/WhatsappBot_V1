@@ -37,7 +37,7 @@ const home = () => `
                 Random Mode
               </button>
             </div>
-            <input type="number" placeholder="Time between messages (Min)" onkeyup="writing(this)" name="every" id="Every">
+            <input type="number" placeholder="Time between messages (Min)" onkeyup="writing(this)" name="every" id="Every" value="${jsConfig.every / 60000}">
             <div class="modes__scheduled">
               <button
                 class="modes__scheduled--toggle toggleBtn ${
