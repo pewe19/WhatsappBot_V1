@@ -15,37 +15,9 @@ var jsConfig = {
   randomPhrases: [],
   scheduledPhrases: [],
   autoMessages: [],
-  chats: [],
   times: [],
   every: 36000,
 };
-// document.querySelectorAll(".inputPhrase").forEach((chat, i) => {document.querySelectorAll(`.inputAnswer.chat-${i}`).forEach((answer) => console.log(answer.value))})
-const chats = [
-  {
-    ask: "cosas bonitas",
-    answers: [
-      "cosa bonita respuesta 1",
-      "cosa bonita respuesta 2",
-      "cosa bonita respuesta 3",
-    ],
-  },
-  {
-    ask: "cosas bonitas2",
-    answers: [
-      "cosa bonita respuesta 12",
-      "cosa bonita respuesta 22",
-      "cosa bonita respuesta 32",
-    ],
-  },
-  {
-    ask: "cosas bonitas3",
-    answers: [
-      "cosa bonita respuesta 13",
-      "cosa bonita respuesta 23",
-      "cosa bonita respuesta 33",
-    ],
-  },
-];
 
 var randomPhrases = [];
 var newRandomPhrases = [];
@@ -59,8 +31,10 @@ var newAutoMessages = [];
 function asignarJsConfig(obj) {
   jsConfig.modes.random = obj.modes[0];
   jsConfig.modes.scheduled = obj.modes[1];
+  jsConfig.modes.auto = obj.modes[2];
   jsConfig.randomPhrases = [...obj.randomPhrases];
   jsConfig.scheduledPhrases = [...obj.scheduledPhrases];
+  jsConfig.autoMessages = [...obj.autoMessages];
   jsConfig.times = [...obj.time];
   jsConfig.every = obj.every;
 }
@@ -83,6 +57,7 @@ function getSavedData(jsData, pyData) {
   console.log("Valores guardados asigandos a py COnfig", pyConfig);
   randomPhrases = [...jsConfig.randomPhrases];
   scheduledPhrases = [...jsConfig.scheduledPhrases];
+  autoMessages = [...jsConfig.autoMessages]
 }
 
 function checkLocalData() {
@@ -109,6 +84,15 @@ function modeToggle(mode) {
     jsConfig.modes.scheduled
       ? addRemClass(scheduled, ["btnOn"])
       : addRemClass(scheduled, [false], ["btnOn"]);
+  }
+
+  if (mode == "auto") {
+    let auto = document.querySelector(".modes__auto--toggle");
+    jsConfig.modes.auto = !jsConfig.modes.auto;
+    console.log("auto: " + jsConfig.modes.auto)
+    jsConfig.modes.auto
+      ? addRemClass(auto, ["btnOn"])
+      : addRemClass(auto, [false], ["btnOn"]);
   }
 }
 

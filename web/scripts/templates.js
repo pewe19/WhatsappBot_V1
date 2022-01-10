@@ -48,6 +48,16 @@ const home = () => `
                 Scheduled Mode
               </button>
             </div>
+            <div class="modes__auto">
+              <button
+                class="modes__auto--toggle toggleBtn ${
+                  jsConfig.modes.auto ? "btnOn" : ""
+                }"
+                onclick="modeToggle('auto')"
+              >
+                Auto Mode
+              </button>
+            </div>
           </section>
           <button class="start" onclick="saveBot()">Save</button>
           <button class="start" onclick="startBot()">Start Bot</button>
@@ -146,11 +156,6 @@ const phraseInput = (type, value, index, where = ".form") => {
       (answer, i) =>
         (answers += `<input type="text" placeholder="Write answer" ${i == (value.answers.length - 1)? `onkeyup=\"event.key == 'Enter'? ${func} : null\"` : ""} class="inputAnswer chat-${index} answer${i}" value="${answer}">`)
     );
-    // if (index.answers == 0)
-    //   answers = `<input type="text" placeholder="Write answer" class="inputAnswer chat-${index.ask} answer0" value="${value.answers[0]}">`;
-    // console.log(
-    //   `Answers index: ${index.answer} Answers input pending: ${answers}`
-    // );
     if (where == ".form") {
       return `<section class="chat chat-${index}">
       <input type="text" placeholder="Write query" class="inputPhrase question${index}" value="${value.ask}">

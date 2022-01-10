@@ -44,10 +44,11 @@ class pythonConfig:
         self.phone = phone
         
 class jsConfig:
-    def __init__(self, modes, randomPhrases, scheduledPhrases, every, times):
-        self.modes = [modes.random, modes.scheduled]
+    def __init__(self, modes, randomPhrases, scheduledPhrases, autoMessages, every, times):
+        self.modes = [modes.random, modes.scheduled, modes.auto]
         self.randomPhrases = randomPhrases
         self.scheduledPhrases = scheduledPhrases
+        self.autoMessages = autoMessages
         self.every = every
         self.times = times
 
@@ -78,7 +79,7 @@ def getJsConfig():
                 "r", encoding="utf8") as f:
         setJsConfigFile = json.load(f, object_hook=lambda d: SimpleNamespace(**d))
     global setJsConfig
-    setJsConfig = jsConfig(setJsConfigFile.modes, setJsConfigFile.randomPhrases, setJsConfigFile.scheduledPhrases, setJsConfigFile.every, setJsConfigFile.times) 
+    setJsConfig = jsConfig(setJsConfigFile.modes, setJsConfigFile.randomPhrases, setJsConfigFile.scheduledPhrases, setJsConfigFile.autoMessages, setJsConfigFile.every, setJsConfigFile.times) 
     f.close()
     
 def getPytConfig():
@@ -100,6 +101,8 @@ def setupConfig(Config):
     print(Config.scheduledPhrases)
     schePhra = str(Config.scheduledPhrases).replace("namespace(" , "{")
     schePhra = schePhra.replace(")", "}")
+    autoMsg = str(Config.autoMessages).replace("namespace(" , "{")
+    autoMsg = autoMsg.replace(")", "}")
     print(schePhra.replace("=", ":"))
     clearBotConfig()
     # Bot logic
@@ -111,10 +114,12 @@ def setupConfig(Config):
                "a+", encoding="utf8")
     bot.write("const onlyScheduled={};".format(str(Config.modes[1]).casefold()))
     bot.write("const onlyRandom={};".format(str(Config.modes[0]).casefold()))
+    bot.write("const autoMode={};".format(str(Config.modes[2]).casefold()))
     bot.write("const everyS={};".format(Config.every))
     bot.write("const scheTime={};".format(Config.times))
     bot.write("const phrases={};".format(Config.randomPhrases))
     bot.write("const schePhrases={};".format(schePhra.replace("=", ":")))
+    bot.write("const chats={};".format(autoMsg.replace("=", ":")))
     
     for line in config:
         bot.write(line)

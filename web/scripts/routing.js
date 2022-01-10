@@ -1,5 +1,5 @@
 window.onload = () => {
-  routes("auto");
+  routes("home");
   
 };
 

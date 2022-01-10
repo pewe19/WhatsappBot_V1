@@ -6,7 +6,7 @@ console.log("Runing Program");
 // MODES: Can be activated together
 const onlyScheduled = false;
 const onlyRandom = false;
-const IAmode = true;
+const autoMode = false;
 
 // TIME: An hour or less on Scheduled Mode
 const everyS = 3600000; // How much it should wait between messages (in miliseconds)
@@ -32,28 +32,28 @@ const schePhrases = [
 // Just mention the hours that you would like to schedule the messages (One per hour)
 const scheTime = [12, 22]; // 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15...
 
-var list_container;
 
 const chats = [
   {
-    ask: "cosas bonitas",
+    ask: "question",
     answers: [
-      "cosa bonita respuesta 1",
-      "cosa bonita respuesta 2",
-      "cosa bonita respuesta 3",
+      "question answer 1",
+      "question answer 2",
+      "question answer 3",
     ],
   },
 ];
 
 
 
-var lastMsg;
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // ***** BOT CODE - DO NOT MODIFY ANYTHING UNLESS YOU KNOW WHAT YOU'RE DOING!!! ***** ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 /* SCHEDULED AND RANDOM MESSAGES CONFIGURATION */
 
+var list_container;
+var lastMsg;
 var cache = []; // To avoid repeated phrases.
 var cacheLimit = phrases.length;
 var diff = false;
@@ -230,7 +230,7 @@ function startAI() {
 function getLastMsg(output) {
   let e = output.target;
   if (e == list_container.lastElementChild) {
-    if (e.classList.toString().includes("message-out focusable-list-item")) {
+    if (e.classList.toString().includes("message-in focusable-list-item")) {
       lastMsg = e.innerText.slice(0, e.innerText.lastIndexOf("\n"));
       answerMsg(lastMsg);
     }
@@ -242,9 +242,10 @@ var lastMsgSent = undefined;
 
 function answerMsg(message) {
   let msg = message.toString().toLowerCase();
-  if (msg.includes("hey,")) {
+  let exist = false;
+  if (msg.includes("hey, ")) {
     chats.forEach((chat, i) => {
-      if (msg.toString().toLowerCase().includes(chat.ask)) {
+      if (msg.includes(chat.ask.toLowerCase())) {
         setTimeout(() => {
           let answer = randInt(0, chat.answers.length);
           let flag = {
@@ -261,27 +262,27 @@ function answerMsg(message) {
           if (answer != lastMsgSent) lastMsgSent = answer;
           writeAndSendMsg(chat.answers[answer]);
         }, 1000);
-      } else {
-        if (i == chats.length - 1) {
-          setTimeout(() => {
-            writeAndSendMsg("Sorry, try another question :(");
-          }, 3000);
-        }
-      }
+        exist = true;
+      } 
     });
+  }
+  if (!exist) {
+    setTimeout(() => {
+      writeAndSendMsg("Sorry, try another question :(");
+    }, 3000);
   }
 }
 
 
 function main() {
   // check every 2 seconds if the input area is available, when it is available finish the interval.
- if (onlyRandom || onlyScheduled && IAmode){ // if no mode selected, then throw an alert
+ if (onlyRandom || onlyScheduled && autoMode){ // if no mode selected, then throw an alert
     checkInput(true, true)
     
-  } else if (!onlyRandom && !onlyScheduled && IAmode ) {
+  } else if (!onlyRandom && !onlyScheduled && autoMode ) {
     checkInput(false, true)
 
-  } else if (!onlyRandom && !onlyScheduled && !IAmode) {
+  } else if (!onlyRandom && !onlyScheduled && !autoMode) {
     alert("No mode selected!");
   }
 }
