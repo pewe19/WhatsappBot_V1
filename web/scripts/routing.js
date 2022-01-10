@@ -1,5 +1,6 @@
 window.onload = () => {
-  routes("home");
+  routes("auto");
+  
 };
 
 function routes(route) {
@@ -15,7 +16,12 @@ function routes(route) {
       content.innerHTML = scheme("scheduled");
       loadScheduled(false);
       break;
+    case "auto":
+    content.innerHTML = auto();
+    loadAuto(false);
+    break;
     default:
+      routes("home");
       break;
   }
 }

@@ -4,8 +4,9 @@ console.log("Runing Program");
 // LIST OF EMOJIS ON "emojis.txt"
 
 // MODES: Can be activated together
-const onlyScheduled = true;
-const onlyRandom = true;
+const onlyScheduled = false;
+const onlyRandom = false;
+const IAmode = true;
 
 // TIME: An hour or less on Scheduled Mode
 const everyS = 3600000; // How much it should wait between messages (in miliseconds)
@@ -31,9 +32,27 @@ const schePhrases = [
 // Just mention the hours that you would like to schedule the messages (One per hour)
 const scheTime = [12, 22]; // 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15...
 
+var list_container;
+
+const chats = [
+  {
+    ask: "cosas bonitas",
+    answers: [
+      "cosa bonita respuesta 1",
+      "cosa bonita respuesta 2",
+      "cosa bonita respuesta 3",
+    ],
+  },
+];
+
+
+
+var lastMsg;
 // --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // ***** BOT CODE - DO NOT MODIFY ANYTHING UNLESS YOU KNOW WHAT YOU'RE DOING!!! ***** ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 // -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/* SCHEDULED AND RANDOM MESSAGES CONFIGURATION */
 
 var cache = []; // To avoid repeated phrases.
 var cacheLimit = phrases.length;
@@ -51,7 +70,9 @@ const getTime = () => new Date(Date.now()).getHours(); // Get the current time(h
 
 function randInt(min, max) {
   // Generate a random number
-  return Math.round(Math.random() * max - min);
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 function isDiff(phrase, che) {
@@ -65,7 +86,7 @@ function isDiff(phrase, che) {
 function selectPhrase() {
   // It select a phrase and send it to "isDiff( "phrase selected", cache[string] )" to avoid repeat the phrase, if it isn't on the list, then finish the loop turning diff to true
   diff = false;
-  let count = 0
+  let count = 0;
   while (!diff) {
     chosenPhrase = randInt(0, phrases.length);
     isDiff(chosenPhrase, cache) ? (diff = true) : (diff = false);
@@ -82,13 +103,19 @@ function checkcache() {
     cache = [];
     cache.push(chosenPhrase);
   }
-  console.log("valor de cache: ", cache)
+  console.log("valor de cache: ", cache);
 }
 
 function sendMsg(input) {
   // "click" on input to unlock "send button" and "click" on "send button"
   input.dispatchEvent(eventInput);
-  document.querySelector("button._4sWnG").click();
+  input.dispatchEvent(eventInput);
+  input.dispatchEvent(eventInput);
+
+  setTimeout(() => {
+    document.querySelector("button._4sWnG").click();
+
+  }, 500)
 }
 
 function writeAndSendMsg(phrase) {
@@ -163,29 +190,100 @@ function startBot() {
   console.log("Bot Initialized");
 }
 
-function checkInput() {
+function checkInput(bot, ia) {
   // Check if the input (message area) is available, if it is then start the bot. else, check again.
-  if (typeof msgInput != "undefined") {
-    console.groupCollapsed("check Input");
-    console.log("Found input");
-    console.log(msgInput);
-    console.groupEnd();
-    startBot();
-    clearInterval(isReady);
+  isReady = setInterval(() => {
+    if (
+      typeof msgInput != "undefined" &&
+      typeof list_container != ("undefined" || null)
+    ) {
+      console.groupCollapsed("check Input");
+      console.log("Found input");
+      console.log(msgInput);
+      console.groupEnd();
+      if (ia) startAI();
+      if (bot) startBot();
+      clearInterval(isReady);
+    } else {
+      list_container = document.querySelector(
+        '[aria-label="Message list. Press right arrow key on a message to open message context menu."]'
+      );
+      document
+        .querySelectorAll("._13NKt.copyable-text.selectable-text")
+        .forEach((e) => {
+          e.hasAttribute("spellcheck") ? (msgInput = e) : null;
+        });
+    }
+  }, 2000)
+}
+
+/* "AI" */
+
+function startAI() {
+  list_container.addEventListener(
+    "DOMNodeInserted",
+    (output) => getLastMsg(output),
+    false
+  );
+}
+
+function getLastMsg(output) {
+  let e = output.target;
+  if (e == list_container.lastElementChild) {
+    if (e.classList.toString().includes("message-out focusable-list-item")) {
+      lastMsg = e.innerText.slice(0, e.innerText.lastIndexOf("\n"));
+      answerMsg(lastMsg);
+    }
   } else {
-    document
-      .querySelectorAll("._13NKt.copyable-text.selectable-text")
-      .forEach((e) => {
-        e.hasAttribute("spellcheck") ? (msgInput = e) : null;
-      });
+    // console.log("No valido: ", e);
+  }
+}
+var lastMsgSent = undefined;
+
+function answerMsg(message) {
+  let msg = message.toString().toLowerCase();
+  if (msg.includes("hey,")) {
+    chats.forEach((chat, i) => {
+      if (msg.toString().toLowerCase().includes(chat.ask)) {
+        setTimeout(() => {
+          let answer = randInt(0, chat.answers.length);
+          let flag = {
+            value: true,
+            count: 0
+          };
+          if (lastMsgSent != undefined) {
+            while (answer == lastMsgSent && flag) {
+              answer = randInt(0, chat.answers.length);
+              flag.count++;
+              if (flag.count == 100) flag.value = false;
+            }
+          }
+          if (answer != lastMsgSent) lastMsgSent = answer;
+          writeAndSendMsg(chat.answers[answer]);
+        }, 1000);
+      } else {
+        if (i == chats.length - 1) {
+          setTimeout(() => {
+            writeAndSendMsg("Sorry, try another question :(");
+          }, 3000);
+        }
+      }
+    });
   }
 }
 
+
 function main() {
   // check every 2 seconds if the input area is available, when it is available finish the interval.
-  onlyRandom || onlyScheduled // if no mode selected, then throw an alert
-    ? (isReady = setInterval(checkInput, 2000))
-    : alert("No mode selected!");
+ if (onlyRandom || onlyScheduled && IAmode){ // if no mode selected, then throw an alert
+    checkInput(true, true)
+    
+  } else if (!onlyRandom && !onlyScheduled && IAmode ) {
+    checkInput(false, true)
+
+  } else if (!onlyRandom && !onlyScheduled && !IAmode) {
+    alert("No mode selected!");
+  }
 }
 
 main(); // Start program

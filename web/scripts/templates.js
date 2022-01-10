@@ -68,6 +68,17 @@ const scheme = (type) =>
             }')">Apply</button>
         </section>`;
 
+const auto = () => `
+<section id="auto">
+          <section class="addQuestion">
+            <button class="btn add" onclick="addInput({name: 'auto', index: autoMessages.length},{ask: '', answers: ['']})">+</button>
+              <div class="form">
+              </div>
+              </section>
+              <button class="btn apply" onclick="addPhrases('auto')">Apply</button>
+          </section>
+`;
+
 const loadRandom = (reload, p = randomPhrases) => {
   if (reload) randomPhrases = [...newRandomPhrases];
   newRandomPhrases = [];
@@ -91,14 +102,27 @@ const loadScheduled = (reload, p = scheduledPhrases) => {
     );
   });
 };
+
+const loadAuto = (reload, p = autoMessages) => {
+  if (reload) autoMessages = [...newAutoMessages];
+  newAutoMessages = [];
+  p.forEach((chat) => {
+    document.querySelector(".form").innerHTML += phraseInput(
+      "auto",
+      chat,
+      p.indexOf(chat)
+    );
+  });
+};
 // ELEMENTS
 
 const randomPhraseItem = (phrase, index) => `
 <li class="list__phrase p${index}" onclick="deletePhrase(this)">${phrase}</li>
 `;
 
-const phraseInput = (type, value, index) => {
-  if (type == "random") {
+const phraseInput = (type, value, index, where = ".form") => {
+
+  if (type == "random" && where == ".form") {
     return `
     <div class="input r">
     <input type="text" placeholder="Write message here" class="addRandomPhrase inputPhrase r${index}" value="${value}" onkeyup="phraseWriting('random', this, ${index})"/>
@@ -106,11 +130,39 @@ const phraseInput = (type, value, index) => {
     </div>
     `;
   }
-  if (type == "scheduled") {
+  if (type == "scheduled" && where == ".form") {
     return `<div class="input s">
     <input type="text" placeholder="Write a message here" class="inputPhrase s${index}" value="${value.phrase}" onkeyup="phraseWriting('scheduled', this, ${index})">
     <input type="number" placeholder="time" value="${value.time}" class="inputTime s${index}">
     <button class="btn add" onclick="delInput('s', this, ${index})">X</button>
   </div>`;
   }
+
+  if (type == "auto") {
+    let answers = "";
+    let func = `addInput({name: 'auto', index: ${index}},{ask: ${value.ask== ''? '\'\'' : "'"+value.ask+"'" }, answers: [''] },  {where: '.answers', chat: '.chat-${index}__answers'} )`;
+
+    value.answers.forEach(
+      (answer, i) =>
+        (answers += `<input type="text" placeholder="Write answer" ${i == (value.answers.length - 1)? `onkeyup=\"event.key == 'Enter'? ${func} : null\"` : ""} class="inputAnswer chat-${index} answer${i}" value="${answer}">`)
+    );
+    // if (index.answers == 0)
+    //   answers = `<input type="text" placeholder="Write answer" class="inputAnswer chat-${index.ask} answer0" value="${value.answers[0]}">`;
+    // console.log(
+    //   `Answers index: ${index.answer} Answers input pending: ${answers}`
+    // );
+    if (where == ".form") {
+      return `<section class="chat chat-${index}">
+      <input type="text" placeholder="Write query" class="inputPhrase question${index}" value="${value.ask}">
+      <section class="answers chat-${index}__answers">
+      ${answers}
+      <button class="btn add" onclick="${func}">+</button>
+      </section>
+      </section>`;
+    }
+    if (where == ".answers") {
+      return `${answers}<button class="btn add" onclick="${func}">+</button> `;
+    }
+  } 
+  
 };

@@ -1,31 +1,60 @@
 const content = document.getElementById("content");
 // HOME ROUTE
 
-
-
 var pyConfig = {
   browser: "",
   phone: "",
-}
-
+};
 
 var jsConfig = {
   modes: {
     random: false,
-    scheduled: false
+    scheduled: false,
+    auto: false
   },
   randomPhrases: [],
   scheduledPhrases: [],
+  autoMessages: [],
+  chats: [],
   times: [],
   every: 36000,
-}
-
+};
+// document.querySelectorAll(".inputPhrase").forEach((chat, i) => {document.querySelectorAll(`.inputAnswer.chat-${i}`).forEach((answer) => console.log(answer.value))})
+const chats = [
+  {
+    ask: "cosas bonitas",
+    answers: [
+      "cosa bonita respuesta 1",
+      "cosa bonita respuesta 2",
+      "cosa bonita respuesta 3",
+    ],
+  },
+  {
+    ask: "cosas bonitas2",
+    answers: [
+      "cosa bonita respuesta 12",
+      "cosa bonita respuesta 22",
+      "cosa bonita respuesta 32",
+    ],
+  },
+  {
+    ask: "cosas bonitas3",
+    answers: [
+      "cosa bonita respuesta 13",
+      "cosa bonita respuesta 23",
+      "cosa bonita respuesta 33",
+    ],
+  },
+];
 
 var randomPhrases = [];
 var newRandomPhrases = [];
 
 var scheduledPhrases = [];
 var newScheduledPhrases = [];
+
+var autoMessages = [];
+var newAutoMessages = [];
 
 function asignarJsConfig(obj) {
   jsConfig.modes.random = obj.modes[0];
@@ -39,26 +68,26 @@ function asignarJsConfig(obj) {
 function asignarPyConfig(obj) {
   pyConfig.browser = obj.browser;
   pyConfig.phone = obj.phone;
-  document.getElementById("Phone").value = pyConfig.phone
-  document.getElementById("Browser").value = pyConfig.browser
+  document.getElementById("Phone").value = pyConfig.phone;
+  document.getElementById("Browser").value = pyConfig.browser;
 }
 
-eel.expose(getSavedData)
+eel.expose(getSavedData);
 function getSavedData(jsData, pyData) {
   savedJsData = JSON.parse(jsData);
   savedPyData = JSON.parse(pyData);
-  console.log(savedPyData)
-  if (savedJsData != (undefined || null || "")) asignarJsConfig(savedJsData)
-  if (savedPyData != (undefined || null || "")) asignarPyConfig(savedPyData)
-  console.log("Valores guardados asigandos a js COnfig", jsConfig)
-  console.log("Valores guardados asigandos a py COnfig", pyConfig)
-  randomPhrases = [...jsConfig.randomPhrases]
-  scheduledPhrases = [...jsConfig.scheduledPhrases]
+  console.log(savedPyData);
+  if (savedJsData != (undefined || null || "")) asignarJsConfig(savedJsData);
+  if (savedPyData != (undefined || null || "")) asignarPyConfig(savedPyData);
+  console.log("Valores guardados asigandos a js COnfig", jsConfig);
+  console.log("Valores guardados asigandos a py COnfig", pyConfig);
+  randomPhrases = [...jsConfig.randomPhrases];
+  scheduledPhrases = [...jsConfig.scheduledPhrases];
 }
 
 function checkLocalData() {
-  console.log(jsConfig)
-  eel.checkSavedData()
+  console.log(jsConfig);
+  eel.checkSavedData();
 }
 
 checkLocalData();
@@ -103,20 +132,18 @@ function writing(e) {
 }
 
 function saveBot() {
-    eel.getpythonConfig(JSON.stringify(pyConfig));
-    eel.getjsConfig(JSON.stringify(jsConfig));
+  eel.getpythonConfig(JSON.stringify(pyConfig));
+  eel.getjsConfig(JSON.stringify(jsConfig));
 }
 
 function startBot() {
-  saveBot()
+  saveBot();
   eel.startBot();
 }
 
 // RANDOM ROUTE
 
-
-
-function addInput(type, value) {
+function addInput(type, value, where = ".form") {
   let inputs = document.querySelectorAll(".inputPhrase");
   let values = [];
   if (type == "scheduled") {
@@ -124,14 +151,13 @@ function addInput(type, value) {
     if (value == "") {
       object = { phrase: value, time: value };
     }
-    newScheduledPhrases.push(object);
     inputs.forEach((input, index) => {
       values.push({ phrase: input.value, time: times[index].value });
     });
-    document.querySelector(".form").innerHTML = "";
+    document.querySelector(where).innerHTML = "";
     newScheduledPhrases = [...values];
     loadScheduled(true, newScheduledPhrases);
-    document.querySelector(".form").innerHTML += phraseInput(
+    document.querySelector(where).innerHTML += phraseInput(
       "scheduled",
       value != "" ? value : object,
       newScheduledPhrases.length - 1
@@ -140,27 +166,52 @@ function addInput(type, value) {
   }
 
   if (type == "random") {
-    newRandomPhrases.push(value);
     inputs.forEach((input) => {
       values.push(input.value);
     });
-    document.querySelector(".form").innerHTML = "";
+    document.querySelector(where).innerHTML = "";
     newRandomPhrases = [...values];
+    console.log(`[newRandomPhrases] Segundo push: ${newRandomPhrases}`);
+
     loadRandom(true, newRandomPhrases);
-    document.querySelector(".form").innerHTML += phraseInput(
+    document.querySelector(where).innerHTML += phraseInput(
       "random",
       value,
-      newRandomPhrases.length - 1
+      newRandomPhrases.length
     );
+    console.log(
+      `[newRandomPhrases] Luego de LoadRandom(): ${newRandomPhrases}`
+    );
+
     console.log("Random input added: ", newRandomPhrases);
+  }
+
+  if (type.name == "auto") {
+    inputs.forEach((ask, i) => {
+      values.push({ ask: ask.value, answers: [] });
+      document.querySelectorAll(`.inputAnswer.chat-${i}`).forEach((answer) => {
+        values[i].answers.push(answer.value);
+      });
+    });
+    if (where.where == ".answers") values[type.index].answers.push("");
+    if (where == ".form") values.push(value);
+    document.querySelector(".form").innerHTML =
+      "";
+    newAutoMessages = [...values];
+    console.log("nAm asigando: ", newAutoMessages);
+    if (newAutoMessages.length != 0)
+      loadAuto(true, newAutoMessages);
+    console.log("Values: ", values);
+    console.log("NewAutoMessages: ", newAutoMessages);
+    console.log("AutoMessages: ", autoMessages);
   }
 }
 
-function refreshInput(type) {
-  for (let i = 0; i < randomPhrases.length; i++) {
-    document.querySelector(".inputPhrase")[i].textContent = randomPhrases[i];
-  }
-}
+// function refreshInput(type) {
+//   for (let i = 0; i < randomPhrases.length; i++) {
+//     document.querySelector(".inputPhrase")[i].textContent = randomPhrases[i];
+//   }
+// }
 function delInput(input, button, index) {
   document.querySelectorAll("." + input + index).forEach((e) => e.remove());
   button.remove();
@@ -181,7 +232,6 @@ function phraseWriting(type, text, index) {
 }
 
 function addPhrases(type) {
-  
   let values = [];
   let inputs = document.querySelectorAll(".inputPhrase");
   if (type == "random") {
@@ -190,7 +240,7 @@ function addPhrases(type) {
     });
     newRandomPhrases = [...values];
     document.querySelector(".form").innerHTML = "";
-    jsConfig.randomPhrases = [...newRandomPhrases]
+    jsConfig.randomPhrases = [...newRandomPhrases];
     loadRandom(true, newRandomPhrases);
     console.log("Random phrases saved: ", randomPhrases);
   }
@@ -204,27 +254,44 @@ function addPhrases(type) {
       ) {
         values.push({ phrase: input.value, time: times[index].value });
       } else {
-        alert("Messages incompleted deleted");
+        console.log("Messages Incompleted Deleted!");
       }
     });
     newScheduledPhrases = [...values];
     document.querySelector(".form").innerHTML = "";
-    jsConfig.scheduledPhrases = [...newScheduledPhrases]
+    jsConfig.scheduledPhrases = [...newScheduledPhrases];
     loadScheduled(true, newScheduledPhrases);
     console.log("Scheduled phrases saved: ", scheduledPhrases);
-    jsConfig.times = []
-    jsConfig.scheduledPhrases.forEach(phrase => {
-      if (!jsConfig.times.includes(phrase.time)){
-        jsConfig.times.push(phrase.time)
+    jsConfig.times = [];
+    jsConfig.scheduledPhrases.forEach((phrase) => {
+      if (!jsConfig.times.includes(phrase.time)) {
+        jsConfig.times.push(phrase.time);
       }
-      
-    })
+    });
+  }
+
+  if (type == "auto") {
+    inputs.forEach((ask, i) => {
+      if (ask.value != ("" || undefined || null)) {
+        values.push({ ask: ask.value, answers: [] });
+        document.querySelectorAll(`.inputAnswer.chat-${i}`).forEach((answer) => {
+          values[i].answers.push(answer.value);
+        });
+      } else {
+        console.log("Messages Without Question Deleted!")
+      }
+    });
+    document.querySelector(".form").innerHTML =
+    "";
+    newAutoMessages = [...values];
+    jsConfig.autoMessages = [...newAutoMessages];
+    console.log("nAm asigando: ", newAutoMessages);
+    if (newAutoMessages.length != 0)
+      loadAuto(true, newAutoMessages);
+    console.log("Auto phrases saved: ", jsConfig.autoMessages);
 
   }
-  saveBot()
+  saveBot();
 }
 
 // SCHEDULED ROUTE
-
-
-
